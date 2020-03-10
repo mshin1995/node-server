@@ -34,9 +34,11 @@ app.get('/all', (req, res) => {
 })
 
 app.post('/data', (req, res) => {
+    let row = req.body.key
+    console.log(req.body)
     sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: 'Sheet1',
+        range: `${row}:${row}`,
         valueInputOption: 'USER_ENTERED',
         includeValuesInResponse: true,
         resource: {
@@ -47,7 +49,6 @@ app.post('/data', (req, res) => {
             console.log(err);
         } else {
             res.send(response.data.updates)
-            console.log(response.data.values)
         }
     });
 })
@@ -62,7 +63,6 @@ app.delete('/data/:key', (req, res) => {
             console.log(err);
         } else {
             res.send(response.data.updates)
-            console.log(response.data.values)
         }
     });
 })
