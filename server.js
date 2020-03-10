@@ -1,10 +1,11 @@
-const {google} = require('googleapis')
-const sheets = google.sheets('v4')
-const spreadsheetId = '1dG_Bxm2UfnpMCvtbscuY-NnvNnOQ7izLzPvFstXyPiM'
-const credentials = require('./credentials.json')
-const express = require('express')
-const bodyParser = require('body-parser')
-const app = express()
+const {google} = require('googleapis');
+const sheets = google.sheets('v4');
+const spreadsheetId = '1dG_Bxm2UfnpMCvtbscuY-NnvNnOQ7izLzPvFstXyPiM';
+const credentials = require('./credentials.json');
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
 
 app.use(bodyParser.json())
 
@@ -18,13 +19,40 @@ const auth = new google.auth.JWT (
 
 google.options({auth})
 
-sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: 'Sheet1',  
-}, (err, resp) => {
-    if(err) {
-        console.log(err);
-    } else {
-        console.log(resp.data.values)
-    }
-});
+app.get('/all', (req, res) => {
+    sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: 'Sheet1',  
+    }, (err, response) => {
+        if(err) {
+            console.log(err);
+        } else {
+            res.send(response.data.values.map(([key, value]) => ({key, value})))
+            console.log(response.data.values)
+        }
+    });
+})
+
+app.post('/data', (req, res) => {
+    sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: 'Sheet1',
+        valueInputOption: 'USER_ENTERED',
+        includeValuesInResponse: true,
+        resource: {
+            values: [[req.body.key, req.body.value]]
+        }
+    }, (err, response) => {
+        if(err) {
+            console.log(err);
+        } else {
+            res.send(response.data.updates)
+            console.log(response.data.values)
+        }
+    });
+})
+
+
+
+app.listen(3000)
+
