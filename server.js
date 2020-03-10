@@ -52,7 +52,20 @@ app.post('/data', (req, res) => {
     });
 })
 
-
+app.delete('/data/:key', (req, res) => {
+    let row = req.params.key
+    sheets.spreadsheets.values.clear({
+        spreadsheetId,
+        range: `${row}:${row}`,
+    },  (err, response) => {
+        if(err) {
+            console.log(err);
+        } else {
+            res.send(response.data.updates)
+            console.log(response.data.values)
+        }
+    });
+})
 
 app.listen(3000)
 
