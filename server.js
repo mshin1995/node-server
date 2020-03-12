@@ -1,6 +1,6 @@
 const {google} = require('googleapis');
+const spreadsheetId = '1dG_Bxm2UfnpMCvtbscuY-NnvNnOQ7izLzPvFstXyPiM'
 const sheets = google.sheets('v4');
-const { GoogleSpreadsheet }= require('google-spreadsheet');
 const credentials = require('./credentials.json');
 const express = require('express');
 const bodyParser = require('body-parser');
